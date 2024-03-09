@@ -15,12 +15,14 @@ func main() {
 	}
 
 	date := time.Now().Format(time.RFC3339)
-	path := fmt.Sprintf("results/%v", date)
 
-	err = os.MkdirAll(path, os.ModePerm)
+	folder := "results/"
+	err = os.MkdirAll(folder, os.ModePerm)
 	if err != nil {
 		log.Fatal(err)
 	}
+
+	path := fmt.Sprintf("%v%v", folder, date)
 
 	err = os.WriteFile(path, out, 0644)
 	if err != nil {
