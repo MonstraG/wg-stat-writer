@@ -9,7 +9,7 @@ import (
 )
 
 func main() {
-	out, err := exec.Command("wg show").Output()
+	out, err := exec.Command("wg", "show").Output()
 	if err != nil {
 		log.Fatal(err)
 	}
