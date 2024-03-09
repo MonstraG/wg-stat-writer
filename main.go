@@ -36,7 +36,7 @@ func main() {
 	date := time.Now().UTC().Format(time.RFC3339)
 	resultsFilePath := path.Join(resultsFolder, date)
 
-	err = os.WriteFile(resultsFilePath, out, os.ModePerm)
+	err = os.WriteFile(resultsFilePath, out, 666)
 	if err != nil {
 		log.Fatal(err)
 	}
