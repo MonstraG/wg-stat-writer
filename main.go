@@ -5,18 +5,27 @@ import (
 	"log"
 	"os"
 	"os/exec"
+	"strings"
 	"time"
 )
 
 func main() {
+	argsWithoutProg := os.Args[1:]
+	folder := "results/"
+	if len(argsWithoutProg) > 0 {
+		folder = argsWithoutProg[0]
+	}
+	if !strings.HasSuffix(folder, "/") {
+		folder += "/"
+	}
+
 	out, err := exec.Command("wg", "show").Output()
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	date := time.Now().Format(time.RFC3339)
+	date := time.Now().UTC().Format(time.RFC3339)
 
-	folder := "results/"
 	err = os.MkdirAll(folder, os.ModePerm)
 	if err != nil {
 		log.Fatal(err)
