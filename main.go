@@ -1,39 +1,42 @@
 package main
 
 import (
-	"fmt"
 	"log"
 	"os"
 	"os/exec"
-	"strings"
+	"path"
 	"time"
 )
 
-func main() {
-	argsWithoutProg := os.Args[1:]
-	folder := "results/"
-	if len(argsWithoutProg) > 0 {
-		folder = argsWithoutProg[0]
-	}
-	if !strings.HasSuffix(folder, "/") {
-		folder += "/"
+const defaultResultsFolder = "results"
+
+func getResultsFolder() string {
+	folder := defaultResultsFolder
+
+	if len(os.Args) > 1 {
+		folder = os.Args[1]
 	}
 
+	return path.Clean(folder)
+}
+
+func main() {
 	out, err := exec.Command("wg", "show").Output()
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	date := time.Now().UTC().Format(time.RFC3339)
+	resultsFolder := getResultsFolder()
 
-	err = os.MkdirAll(folder, os.ModePerm)
+	err = os.MkdirAll(resultsFolder, os.ModePerm)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	path := fmt.Sprintf("%v%v", folder, date)
+	date := time.Now().UTC().Format(time.RFC3339)
+	resultsFilePath := path.Join(resultsFolder, date)
 
-	err = os.WriteFile(path, out, 0644)
+	err = os.WriteFile(resultsFilePath, out, os.ModePerm)
 	if err != nil {
 		log.Fatal(err)
 	}
