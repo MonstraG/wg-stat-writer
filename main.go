@@ -1,6 +1,7 @@
 package main
 
 import (
+	"flag"
 	"log"
 	"os"
 	"os/exec"
@@ -11,22 +12,18 @@ import (
 const defaultResultsFolder = "results"
 
 func getResultsFolder() string {
-	folder := defaultResultsFolder
-
-	if len(os.Args) > 1 {
-		folder = os.Args[1]
-	}
-
-	return path.Clean(folder)
+	pathArg := flag.String("path", defaultResultsFolder, "Folder to save results to")
+	flag.Parse()
+	return path.Clean(*pathArg)
 }
 
 func main() {
+	resultsFolder := getResultsFolder()
+
 	out, err := exec.Command("wg", "show").Output()
 	if err != nil {
 		log.Fatal(err)
 	}
-
-	resultsFolder := getResultsFolder()
 
 	err = os.MkdirAll(resultsFolder, os.ModePerm)
 	if err != nil {
